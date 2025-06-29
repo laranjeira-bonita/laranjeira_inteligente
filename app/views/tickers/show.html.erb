@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @ticker %>
+
+<div>
+  <%= link_to "Edit this ticker", edit_ticker_path(@ticker) %> |
+  <%= link_to "Back to tickers", tickers_path %>
+
+  <%= button_to "Destroy this ticker", @ticker, method: :delete %>
+</div>

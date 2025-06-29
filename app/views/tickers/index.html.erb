@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Tickers</h1>
+
+<div id="tickers">
+  <% @tickers.each do |ticker| %>
+    <%= render ticker %>
+    <p>
+      <%= link_to "Show this ticker", ticker %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New ticker", new_ticker_path %>
