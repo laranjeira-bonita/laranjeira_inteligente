@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :activities
   resources :descriptions
   resources :tickers
   resources :promotions

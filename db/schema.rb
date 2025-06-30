@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_29_235322) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
+  create_table "activities", force: :cascade do |t|
+    t.string "title", null: false
+    t.integer "person_limit", null: false
+    t.datetime "start_at", null: false
+    t.datetime "end_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "descriptions", force: :cascade do |t|
     t.string "describable_type", null: false
     t.integer "describable_id", null: false
