@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root "products#index"
   resources :activities
   resources :descriptions
   resources :tickers
