@@ -69,3 +69,4 @@ group :test do
 end
 
 gem "devise"
+gem 'cpf_cnpj'

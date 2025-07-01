@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_30_014709) do
   create_table "activities", force: :cascade do |t|
     t.string "title", null: false
     t.integer "person_limit", null: false
@@ -18,6 +18,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
     t.datetime "end_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "activities_users", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "activity_id", null: false
+    t.decimal "used_seconds", precision: 10, scale: 3
+    t.decimal "score_points"
+    t.integer "response"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id"], name: "index_activities_users_on_activity_id"
+    t.index ["user_id"], name: "index_activities_users_on_user_id"
   end
 
   create_table "descriptions", force: :cascade do |t|
@@ -37,7 +49,23 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
     t.integer "store_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "promotion_id"
+    t.index ["promotion_id"], name: "index_products_on_promotion_id"
     t.index ["store_id"], name: "index_products_on_store_id"
+  end
+
+  create_table "products_purchases_tables", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.integer "purchase_id", null: false
+    t.integer "quantity", default: 1, null: false
+    t.integer "ticker_id"
+    t.decimal "total_price", precision: 10, scale: 2, null: false
+    t.decimal "paid_amount", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_products_purchases_tables_on_product_id"
+    t.index ["purchase_id"], name: "index_products_purchases_tables_on_purchase_id"
+    t.index ["ticker_id"], name: "index_products_purchases_tables_on_ticker_id"
   end
 
   create_table "promotions", force: :cascade do |t|
@@ -47,6 +75,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
     t.integer "store_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "activity_id", null: false
+    t.index ["activity_id"], name: "index_promotions_on_activity_id"
     t.index ["store_id"], name: "index_promotions_on_store_id"
   end
 
@@ -63,6 +93,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
     t.string "document_cnpj"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_stores_on_user_id"
   end
 
   create_table "tickers", force: :cascade do |t|
@@ -73,6 +105,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "promotion_id", null: false
+    t.index ["promotion_id"], name: "index_tickers_on_promotion_id"
     t.index ["store_id"], name: "index_tickers_on_store_id"
     t.index ["user_id"], name: "index_tickers_on_user_id"
   end
@@ -94,7 +128,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_30_000123) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "activities_users", "activities"
+  add_foreign_key "activities_users", "users"
   add_foreign_key "products", "stores"
+  add_foreign_key "products_purchases_tables", "products"
+  add_foreign_key "products_purchases_tables", "purchases"
   add_foreign_key "purchases", "users"
   add_foreign_key "tickers", "users"
 end
