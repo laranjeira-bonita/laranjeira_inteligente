@@ -5,7 +5,11 @@ Rails.application.routes.draw do
   resources :tickers
   resources :promotions
   resources :purchases
-  resources :products
+  resources :products do
+    member do
+      delete :purge_image
+    end
+  end  
   resources :stores
   devise_for :users, controllers: { sessions: 'users/sessions' }
 

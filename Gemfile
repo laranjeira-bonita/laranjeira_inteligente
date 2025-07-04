@@ -70,3 +70,5 @@ end
 
 gem "devise"
 gem 'cpf_cnpj'
+gem 'byebug'
+gem 'image_processing', '~> 1.2'

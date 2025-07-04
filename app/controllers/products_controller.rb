@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show edit update destroy ]
+  before_action :set_product, only: %i[ show edit update destroy purge_image]
 
   # GET /products or /products.json
   def index
@@ -57,6 +57,12 @@ class ProductsController < ApplicationController
     end
   end
 
+  def purge_image
+    image = @product.images.find(params[:image_id])
+    image.purge
+    redirect_back fallback_location: edit_product_path(@product), notice: "Image deleted."
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product
@@ -65,6 +71,6 @@ class ProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.require(:product).permit(:name, :category, :description, :price)
+      params.require(:product).permit(:name, :category, :description, :price, :store_id, images: [])
     end
 end

@@ -1,10 +1,98 @@
-<p style="color: green"><%= notice %></p>
+<div style="display: flex; flex-direction: column; justify-content: flex-start; align-items: center; min-height: 70vh;">
+  <div style="max-width: 95%; width: 460px; height: 320px; overflow-x: auto; white-space: nowrap; display: flex; align-items: center; border-radius: 2%; background: #fff;">
+    <% @product.images.each do |image| %>
+      <span style="display: inline-block; margin-left: 30px;">
+        <%= image_tag image.variant(resize_to_limit: [300, 300]), style: "max-width: 300px; max-height: 300px;" if image.variable? %>
+      </span>
+    <% end %>
+  </div>
+  <%= render @product %>
 
-<%= render @product %>
 
-<div>
-  <%= link_to "Edit this product", edit_product_path(@product) %> |
-  <%= link_to "Back to products", products_path %>
+  <!-- <div class="rc-dimension rf-bfe-product-dimension-group">
+    <div class="rc-dimension-selector-group form-selector-group">
+      <div class="rc-dimension-selector-row form-selector">
+        <input class="form-selector-input" name="dimensionCapacity" id="capacity-128gb" type="radio" value="128gb">
+        <label for="capacity-128gb" class="form-selector-label">
+          <span class="row">
+            <span class="column form-selector-left-col rf-bfe-selector-left-col">
+              <span class="form-selector-title">128&nbsp;<small>GB</small></span>
+            </span>
+            <span class="column form-selector-right-col rf-bfe-selector-right-col">
+              <span class="form-label-small">R$ 6.499,00</span>
+            </span>
+          </span>
+        </label>
+      </div>
+      <div class="rc-dimension-selector-row form-selector">
+        <input class="form-selector-input" name="dimensionCapacity" id="capacity-256gb" type="radio" value="256gb">
+        <label for="capacity-256gb" class="form-selector-label">
+          <span class="row">
+            <span class="column form-selector-left-col rf-bfe-selector-left-col">
+              <span class="form-selector-title">256&nbsp;<small>GB</small></span>
+            </span>
+            <span class="column form-selector-right-col rf-bfe-selector-right-col">
+              <span class="form-label-small">R$ 7.299,00</span>
+            </span>
+          </span>
+        </label>
+      </div>
+      <div class="rc-dimension-selector-row form-selector">
+        <input class="form-selector-input" name="dimensionCapacity" id="capacity-512gb" type="radio" value="512gb">
+        <label for="capacity-512gb" class="form-selector-label">
+          <span class="row">
+            <span class="column form-selector-left-col rf-bfe-selector-left-col">
+              <span class="form-selector-title">512&nbsp;<small>GB</small></span>
+            </span>
+            <span class="column form-selector-right-col rf-bfe-selector-right-col">
+              <span class="form-label-small">R$ 8.799,00</span>
+            </span>
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
 
-  <%= button_to "Destroy this product", @product, method: :delete %>
+
+  
+
+  <div class="colornav-items" style="display: flex; flex-direction: row;">
+    <span class="colornav-item" style="margin: 3px;">
+      <input type="radio" id="color-blue" class="colornav-value" name="dimensionColor" value="blue" style="display:none;">
+      <label for="color-blue" class="colornav-link" style="cursor:pointer;">
+      <img alt="Azul" src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/finish-blue-202309?wid=28&fmt=jpeg&qlt=90" class="colornav-swatch">    </label>
+    </span>
+    <span class="colornav-item" style="margin: 3px;">
+      <input type="radio" id="color-pink" class="colornav-value" name="dimensionColor" value="pink" style="display:none;">
+      <label for="color-pink" class="colornav-link" style="cursor:pointer;">
+        <img alt="Rosa" src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/finish-pink-202309?wid=28&fmt=jpeg&qlt=90" class="colornav-swatch">
+        </label>
+    </span>
+    <span class="colornav-item" style="margin: 3px;">
+      <input type="radio" id="color-yellow" class="colornav-value" name="dimensionColor" value="yellow" style="display:none;">
+      <label for="color-yellow" class="colornav-link" style="cursor:pointer;">
+        <img alt="Amarelo" src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/finish-yellow-202309?wid=28&fmt=jpeg&qlt=90" class="colornav-swatch">
+      </label>
+    </span>
+    <span class="colornav-item" style="margin: 3px;">
+      <input type="radio" id="color-green" class="colornav-value" name="dimensionColor" value="green" style="display:none;">
+      <label for="color-green" class="colornav-link" style="cursor:pointer;">
+        <img alt="Verde" src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/finish-green-202309?wid=28&fmt=jpeg&qlt=90" class="colornav-swatch">
+      </label>
+    </span>
+    <span class="colornav-item" style="margin: 3px;">
+      <input type="radio" id="color-black" class="colornav-value" name="dimensionColor" value="black" style="display:none;">
+      <label for="color-black" class="colornav-link" style="cursor:pointer;">
+        <img alt="Preto" src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/finish-black-202309?wid=28&fmt=jpeg&qlt=90" class="colornav-swatch">
+      </label>
+    </span>
+  </div>
+
+  <div>
+    <%= link_to "Edit this product", edit_product_path(@product) %> |
+    <%= link_to "Back to products", products_path %>
+
+    <%= button_to "Destroy this product", @product, method: :delete %>
+  </div>  -->
 </div>
+
