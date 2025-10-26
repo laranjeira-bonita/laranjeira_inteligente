@@ -37,11 +37,11 @@ class Payment < ApplicationRecord
 
   def add_bonus_activity
     return unless valid_gift_card?
-    promotion&.activity&.participations&.create(user: user)
+    promotion&.participations&.create(user: user)
   end
 
   def has_activity?
-    promotion&.activity&.participations&.exists?(user: user)
+    promotion&.participations&.exists?(user: user)
   end
 
   def valid_gift_card?
