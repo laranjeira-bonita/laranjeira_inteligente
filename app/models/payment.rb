@@ -2,6 +2,7 @@ class Payment < ApplicationRecord
   include AASM
 
   belongs_to :purchase
+  has_one :user, through: :purchase
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :payment_method, presence: true
   validates :status, presence: true, inclusion: { in: %w[opened paid cancelled] }
@@ -31,16 +32,16 @@ class Payment < ApplicationRecord
 
   def add_ticker
     return unless valid_gift_card?
-    PromotionService.new(promotion).add_ticker(purchase.user)
+    PromotionService.new(promotion).add_ticker(user)
   end
 
   def add_bonus_activity
     return unless valid_gift_card?
-    promotion&.activity&.participations&.create(user: purchase.user)
+    promotion&.activity&.participations&.create(user: user)
   end
 
   def has_activity?
-    promotion&.activity&.participations&.exists?(user: purchase.user)
+    promotion&.activity&.participations&.exists?(user: user)
   end
 
   def valid_gift_card?
