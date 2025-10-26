@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_07_181549) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_26_032018) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,7 +47,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_07_181549) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "game_type", default: 0, null: false
-    t.string "result_description"
   end
 
   create_table "descriptions", force: :cascade do |t|
@@ -104,6 +103,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_07_181549) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "activity_id", null: false
+    t.integer "status", default: 0, null: false
+    t.string "result_description"
     t.index ["activity_id"], name: "index_promotions_on_activity_id"
     t.index ["store_id"], name: "index_promotions_on_store_id"
   end

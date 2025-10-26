@@ -5,6 +5,7 @@ class ProductsController < ApplicationController
   def index
     @products = Product.all
     @activities = Activity.all
+    @participations = current_user.participations.includes(:promotion)
   end
 
   # GET /products/1 or /products/1.json
