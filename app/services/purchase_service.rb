@@ -11,7 +11,7 @@ class PurchaseService
     @purchase = payment.purchase
     approved = MercadoPagoService.new(@purchase.user, @purchase).check_payment_status(payment.transaction_id)
     if approved
-      payment.update!(status: 'paid', paid_at: Time.current)
+      payment.pay!
       @purchase.update!(state: :paid)
     end
     approved

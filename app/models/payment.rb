@@ -14,7 +14,7 @@ class Payment < ApplicationRecord
     state :cancelled
 
     event :pay do
-      transitions from: :opened, to: :paid, after: [:add_bonus_activity, :add_ticker]
+      transitions from: :opened, to: :paid, after: [:after_payment]
     end
 
     event :cancel do
@@ -30,18 +30,20 @@ class Payment < ApplicationRecord
     product.promotion
   end
 
+  def after_payment
+    if valid_gift_card?
+        add_ticker
+        add_bonus_activity
+    end
+    update(paid_at: Time.current)
+  end
+
   def add_ticker
-    return unless valid_gift_card?
-    PromotionService.new(promotion).add_ticker(user)
+    PromotionService.new(promotion).add_ticker(user, product.price)
   end
 
   def add_bonus_activity
-    return unless valid_gift_card?
     promotion&.participations&.create(user: user)
-  end
-
-  def has_activity?
-    promotion&.participations&.exists?(user: user)
   end
 
   def valid_gift_card?

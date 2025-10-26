@@ -3,10 +3,10 @@ class PromotionService
     @promotion = promotion
   end
 
-  def add_ticker(user)
+  def add_ticker(user, price)
     @promotion&.tickers&.create(
       user: user,
-      rate: @promotion.product.price,
+      rate: price,
       off_type: :gift_card,
       store_id: @promotion.store_id
     )
