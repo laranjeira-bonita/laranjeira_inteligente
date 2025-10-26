@@ -69,3 +69,9 @@ group :test do
 end
 
 gem "devise"
+gem 'cpf_cnpj'
+gem 'byebug'
+gem 'image_processing', '~> 1.2'
+gem 'aasm'
+gem 'mercadopago-sdk'
+gem 'dotenv-rails'
