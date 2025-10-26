@@ -1,9 +1,10 @@
 class PurchasesController < ApplicationController
   before_action :set_purchase, only: %i[ show edit update destroy ]
+  before_action :set_payment, only: %i[ confirm_payment ]
 
   # GET /purchases or /purchases.json
   def index
-    @purchases = Purchase.all
+    @purchases = current_user.purchases.includes(:product)
   end
 
   # GET /purchases/1 or /purchases/1.json
@@ -57,10 +58,19 @@ class PurchasesController < ApplicationController
     end
   end
 
+  def confirm_payment
+    approved = PurchaseService.new.confirm_payment(@payment)
+    render json: { approved: approved }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_purchase
       @purchase = Purchase.find(params[:id])
+    end
+
+    def set_payment
+      @payment = Payment.find(params[:payment_id])
     end
 
     # Only allow a list of trusted parameters through.

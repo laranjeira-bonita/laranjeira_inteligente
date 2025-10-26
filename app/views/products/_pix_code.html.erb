@@ -1,0 +1,5 @@
+<div class="pix-payment">
+  <p><%= qr_code %></p>
+  <img src="data:image/png;base64,<%= qr_base64 %>" style="max-width:300px;" />
+  <%= button_to "Confirm", confirm_payment_purchases_path(payment_id: payment_id), method: :post, class: "btn btn-success" %>
+</div>

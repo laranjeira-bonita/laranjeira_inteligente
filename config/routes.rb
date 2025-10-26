@@ -1,10 +1,21 @@
 Rails.application.routes.draw do
+  root "products#index"
   resources :activities
   resources :descriptions
   resources :tickers
   resources :promotions
-  resources :purchases
-  resources :products
+  resources :purchases do
+    collection do
+      post :confirm_payment
+    end
+  end
+  resources :products do
+    member do
+      delete :purge_image
+      post :buy
+    end
+  end 
+  resources :participations, only: [:index, :show, :update]
   resources :stores
   devise_for :users, controllers: { sessions: 'users/sessions' }
 

@@ -3,7 +3,7 @@ class TickersController < ApplicationController
 
   # GET /tickers or /tickers.json
   def index
-    @tickers = Ticker.all
+    @tickers = current_user.tickers
   end
 
   # GET /tickers/1 or /tickers/1.json

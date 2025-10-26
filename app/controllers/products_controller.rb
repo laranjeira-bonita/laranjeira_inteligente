@@ -1,9 +1,10 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show edit update destroy ]
+  before_action :set_product, only: %i[ show edit update destroy purge_image buy]
 
   # GET /products or /products.json
   def index
     @products = Product.all
+    @activities = Activity.all
   end
 
   # GET /products/1 or /products/1.json
@@ -57,6 +58,25 @@ class ProductsController < ApplicationController
     end
   end
 
+  def purge_image
+    image = @product.images.find(params[:image_id])
+    image.purge
+    redirect_back fallback_location: edit_product_path(@product), notice: "Image deleted."
+  end
+
+  def buy
+    @charge_info = PurchaseService.new.create(@product, current_user)
+    respond_to do |format|
+      format.html do
+        html = render_to_string(
+          partial: "pix_code",
+          locals: { qr_code: @charge_info[:qr_code], qr_base64: @charge_info[:qr_base64], payment_id: @charge_info[:payment_id] }
+        )
+        render html: html.html_safe
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product
@@ -65,6 +85,6 @@ class ProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.require(:product).permit(:name, :category, :description, :price)
+      params.require(:product).permit(:name, :category, :description, :price, :store_id, images: [])
     end
 end
