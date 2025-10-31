@@ -8,6 +8,11 @@ class PromotionsController < ApplicationController
 
   # GET /promotions/1 or /promotions/1.json
   def show
+    if @promotion.target_value.nil?
+      @participations = @promotion.participations.order(created_at: :asc)
+    else
+      @participations = @promotion.participations.closest_to(@promotion.target_value)
+    end
   end
 
   # GET /promotions/new
