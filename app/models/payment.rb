@@ -32,14 +32,14 @@ class Payment < ApplicationRecord
 
   def after_payment
     if valid_gift_card?
-        add_ticker
+        add_ticker(:gift_card)
         add_bonus_activity
     end
     update(paid_at: Time.current)
   end
 
-  def add_ticker
-    PromotionService.new(promotion).add_ticker(user, product.price)
+  def add_ticker(off_type)
+    PromotionService.new(promotion).add_ticker(user, product.price, off_type)
   end
 
   def add_bonus_activity

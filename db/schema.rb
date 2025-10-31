@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_26_032018) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_31_022613) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -105,8 +105,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_26_032018) do
     t.integer "activity_id", null: false
     t.integer "status", default: 0, null: false
     t.string "result_description"
+    t.integer "people_limit"
+    t.integer "target_number"
+    t.integer "winner_id"
     t.index ["activity_id"], name: "index_promotions_on_activity_id"
     t.index ["store_id"], name: "index_promotions_on_store_id"
+    t.index ["winner_id"], name: "index_promotions_on_winner_id"
   end
 
   create_table "purchases", force: :cascade do |t|
@@ -166,6 +170,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_26_032018) do
   add_foreign_key "participations", "users"
   add_foreign_key "payments", "purchases"
   add_foreign_key "products", "stores"
+  add_foreign_key "promotions", "users", column: "winner_id"
   add_foreign_key "purchases", "products"
   add_foreign_key "purchases", "users"
   add_foreign_key "tickers", "users"

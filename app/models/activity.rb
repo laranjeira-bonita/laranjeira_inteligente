@@ -1,5 +1,5 @@
 class Activity < ApplicationRecord
-    enum game_type: { medium_number: 0 }
+    enum game_type: { mean: 0, median: 1 }
     belongs_to :winner, class_name: "User", optional: true
     has_many :descriptions, as: :describable, dependent: :destroy
     has_many :users, through: :activities_users
