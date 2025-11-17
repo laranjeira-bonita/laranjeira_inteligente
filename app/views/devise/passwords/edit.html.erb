@@ -1,0 +1,21 @@
+<div class="flex flex-col items-center justify-center" style="min-height: 100vh; background-size: cover; background-position: center; background-image: url('/assets/images/orange.jpg');">
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= f.hidden_field :reset_password_token %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+      
+    <div class="input-row" style="width: 220px; margin-top: 10px;">
+      <%= f.label :password, "Senha", style: "margin-right: 15px;", class: "shadow-text" %><br />
+      <%= f.password_field :password, autocomplete: "current-password", class: "login-input", id: "login_password" %>
+      <%= f.check_box :remember_me, checked: true, style: "display:none;" %>
+    </div>
+
+    <div class="input-row" style="width: 220px; margin-top: 10px;" id="password_confirmation_row">
+        <%= f.label :password_confirmation, "Senha de novo", style: "margin-right: 15px;", class: "shadow-text" %><br />
+        <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "login-input", id: "login_password_confirmation" %>
+    </div>
+
+    <div class="actions input-row login-btn shadow-text" style="width: 220px; margin-top: 10px; height: 32px">
+      <%= f.submit "Enviar", style: "border-radius: 6px; padding: 5px; width: 220px; margin-top: 10px; margin-left: 27px; display: none; font-size: 20px;", id: "login_submit" %>
+    </div>
+  <% end %>
+</div>

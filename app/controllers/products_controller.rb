@@ -3,9 +3,10 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
+    redirect_to new_user_session_path and return unless user_signed_in?
     @products = Product.all
     @activities = Activity.all
-    @participations = current_user.participations.includes(:promotion)
+    @participations = current_user&.participations&.includes(:promotion)
   end
 
   # GET /products/1 or /products/1.json

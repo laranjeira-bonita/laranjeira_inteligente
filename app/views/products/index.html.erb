@@ -1,26 +1,22 @@
-<p style="color: green"><%= notice %></p>
+<div class="bg-red-500 bg-center h-60 flex flex-col justify-center items-center min-h-screen" style="min-height: 100vh; background-size: cover; background-position: center; background-image: url('/assets/images/orange.jpg');">
+<%= link_to "Logout", destroy_user_session_path, method: :delete %>  
+<h1>Welcome <%= current_user.full_name if current_user %></h1>
+  <div id="products">
+    <% @products.each do |product| %>
+      <%= render product %>
+      <p>
+        <%= link_to "Show this product", product %>
+      </p>
+    <% end %>
+  </div>
 
-<!-- <%= link_to "Logout", destroy_user_session_path, method: :delete %> -->
-
-<h1>Welcome, <%= current_user.full_name if current_user %></h1>
-
-<h1>Products</h1>
-
-<div id="products">
-  <% @products.each do |product| %>
-    <%= render product %>
-    <p>
-      <%= link_to "Show this product", product %>
-    </p>
-  <% end %>
-</div>
-
-<div id="participations">
-  <% @participations.each do |participation| %>
-    <%= render participation %>
-    <p>
-      <%= link_to "game details", participation %>
-    </p>
-  <% end %>
+  <div id="participations">
+    <% ( @participations || [] ).each do |participation| %>
+      <%= render participation %>
+      <p>
+        <%= link_to "game details", participation %>
+      </p>
+    <% end %>
+  </div>
 </div>
 

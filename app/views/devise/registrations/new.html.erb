@@ -1,0 +1,68 @@
+<div class="flex flex-col items-center justify-center" style="min-height: 100vh; background-size: cover; background-position: center; background-image: url('/assets/images/orange.jpg');">
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <div class="input-row" style="width: 220px;">
+        <%= f.label :email, style: "margin-right: 22px;", class: "shadow-text" %><br />
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "login-input", id: "login_email" %>
+    </div>
+
+    <div class="input-row" style="width: 220px; margin-top: 10px;">
+        <%= f.label :password, "Senha", style: "margin-right: 15px;", class: "shadow-text" %><br />
+        <%= f.password_field :password, autocomplete: "current-password", class: "login-input", id: "login_password" %>
+      <%= f.check_box :remember_me, checked: true, style: "display:none;" %>
+    </div>
+
+    <div class="input-row" style="width: 220px; margin-top: 10px;" id="password_confirmation_row">
+        <%= f.label :password_confirmation, "Senha de novo", style: "margin-right: 15px;", class: "shadow-text" %><br />
+        <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "login-input", id: "login_password_confirmation" %>
+    </div>
+
+    <div class="actions input-row login-btn shadow-text" style="width: 220px; margin-top: 10px; height: 32px">
+      <%= f.submit "Sign up", style: "border-radius: 6px; padding: 5px; width: 220px; margin-top: 10px; margin-left: 27px; display: none; font-size: 20px;", id: "login_submit" %>
+    </div>
+  <% end %>
+</div>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const email = document.getElementById("login_email");
+    const password = document.getElementById("login_password");
+    const submitBtn = document.getElementById("login_submit");
+
+    function checkFields() {
+      if (email.value.trim() !== "" && password.value.trim() !== "") {
+        submitBtn.style.display = "block";
+      } else {
+        submitBtn.style.display = "none";
+      }
+    }
+
+    email.addEventListener("input", checkFields);
+    password.addEventListener("input", checkFields);
+  });
+</script>
+
+
+
+<style>
+  .login-btn:hover {
+    color: white;
+  }
+
+  .login-input {
+    width: 145px; 
+    border-radius: 6px; 
+    padding: 5px; 
+    background-color: #f6edde;
+  }
+  .shadow-text {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  .input-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+  }
+</style>
