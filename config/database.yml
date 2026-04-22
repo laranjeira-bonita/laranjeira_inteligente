@@ -10,7 +10,7 @@ default: &default
   timeout: 10000
   username: <%= ENV['DATABASE_USERNAME'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
-  host: localhost
+  host: <%= ENV.fetch('DATABASE_HOST', 'localhost') %>
 
 development:
   <<: *default

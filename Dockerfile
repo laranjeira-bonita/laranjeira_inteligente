@@ -1,62 +1,72 @@
-# syntax = docker/dockerfile:1
+# syntax=docker/dockerfile:1
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.1.0
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+FROM ruby:${RUBY_VERSION}-slim AS base
 
-# Rails app lives here
 WORKDIR /rails
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
+ENV BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
+FROM base AS build
 
-# Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips pkg-config
+    apt-get install --no-install-recommends -y \
+      build-essential \
+      curl \
+      git \
+      libpq-dev \
+      libvips \
+      pkg-config && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install application gems
+# Upgrade bundler so it resolves modern precompiled platform gems correctly
+RUN gem install bundler --no-document
+
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
+# Add aarch64-linux platform, then fix tailwindcss-ruby: its Linux gem files
+# don't exist on RubyGems despite API metadata claiming otherwise.
+# Replace the platform-specific entry with the ruby-platform gem (which does exist).
+RUN bundle lock --add-platform aarch64-linux && \
+    sed -i -E 's/tailwindcss-ruby \(([0-9.]+)-aarch64-linux\)/tailwindcss-ruby (\1)/' Gemfile.lock && \
+    sed -i '/tailwindcss-ruby.*sha256/d' Gemfile.lock
+
+RUN RAILS_ENV=production BUNDLE_DEPLOYMENT=1 bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Copy application code
 COPY . .
-
-# Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+# tailwindcss-ruby 4.1.16 has no Linux gem on RubyGems.
+# The gem supports TAILWINDCSS_INSTALL_DIR — download the binary there.
+RUN curl -fsSL "https://github.com/tailwindlabs/tailwindcss/releases/download/v4.1.16/tailwindcss-linux-arm64" \
+         -o /usr/local/bin/tailwindcss && \
+    chmod +x /usr/local/bin/tailwindcss
+
+RUN TAILWINDCSS_INSTALL_DIR=/usr/local/bin \
+    RAILS_ENV=production \
+    SECRET_KEY_BASE_DUMMY=1 \
+    ./bin/rails assets:precompile
 
 
-# Final stage for app image
 FROM base
 
-# Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libsqlite3-0 libvips && \
+    apt-get install --no-install-recommends -y \
+      curl \
+      libpq5 \
+      libvips && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Copy built artifacts: gems, application
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
 USER rails:rails
 
-# Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-
-# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD ["./bin/rails", "server"]
+CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
