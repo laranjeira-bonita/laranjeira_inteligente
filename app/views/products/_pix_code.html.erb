@@ -1,5 +1,56 @@
-<div class="pix-payment">
-  <p><%= qr_code %></p>
-  <img src="data:image/png;base64,<%= qr_base64 %>" style="max-width:300px;" />
-  <%= button_to "Confirm", confirm_payment_purchases_path(payment_id: payment_id), method: :post, class: "btn btn-success" %>
+<div class="pix-payment flex flex-col items-center justify-center"
+     style="color: black; background-color: #ffa500; min-height: 100vh;">
+
+  <div style="text-align: center; margin-bottom: 20px;" class="flex flex-col items-center justify-center align-middle">
+    <img src="data:image/png;base64,<%= transaction.qr_base64 %>" 
+         style="max-width: 600px; border-radius: 12px; min-width: 70vw; margin-top: 40px;" />
+  </div>
+
+  <div style="text-align: center; font-size: 36px; font-weight: bold; margin-bottom: 20px;">
+    <%= price_in_brl(@payment.purchase.price) %>
+  </div>
+
+
+  <div style="text-align: center; margin-bottom: 20px;" class="flex flex-col items-center justify-center align-middle">
+    <button type="button"
+          onclick="copyPix()"
+          class="flex items-center justify-center"
+          style="padding: 12px 20px; background: #f36106; color: white;  height: 48px; font-size: 32px; width: 300px; height: 60px;
+                 border-radius: 8px; border: none; font-weight: bold; margin-bottom: 20px;">
+    Copiar código
+  </button>
+  </div>
+
+  <p id="pix-code" style="display:none;"><%= transaction.qr_code %></p>
+
+  <div style="text-align: center; margin-bottom: 20px;">
+    <%= button_to "Confirmar Pagamento", 
+          confirm_payment_purchases_path(payment_id: payment_id),
+          method: :post,
+          class: "btn btn-success",
+          style: "padding: 10px 20px; font-size: 32px; border-radius: 8px; border: none; background: #f36106; color: black; " %>
+  </div>
+
 </div>
+
+<script>
+function copyPix() {
+  const pixCode = document.getElementById("pix-code").innerText;
+
+  if (!navigator.clipboard) {
+    // fallback (para navegadores antigos)
+    const textarea = document.createElement("textarea");
+    textarea.value = pixCode;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+    alert("Código Pix copiado!");
+    return;
+  }
+
+  navigator.clipboard.writeText(pixCode)
+    .then(() => alert("Código Pix copiado!"))
+    .catch(err => alert("Erro ao copiar: " + err));
+}
+</script>

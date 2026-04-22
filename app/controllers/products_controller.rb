@@ -1,63 +1,10 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show edit update destroy purge_image buy]
-
-  # GET /products or /products.json
+  before_action :set_product, only: %i[ purge_image buy]
+  before_action :set_promotion, only: %i[ select_quantity ]
+  before_action :render_to_register, only: %i[ buy ]
+  before_action :save_invite_code, only: %i[ index ]
   def index
-    redirect_to new_user_session_path and return unless user_signed_in?
-    @products = Product.all
-    @activities = Activity.all
-    @participations = current_user&.participations&.includes(:promotion)
-  end
-
-  # GET /products/1 or /products/1.json
-  def show
-  end
-
-  # GET /products/new
-  def new
-    @product = Product.new
-  end
-
-  # GET /products/1/edit
-  def edit
-  end
-
-  # POST /products or /products.json
-  def create
-    @product = Product.new(product_params)
-
-    respond_to do |format|
-      if @product.save
-        format.html { redirect_to @product, notice: "Product was successfully created." }
-        format.json { render :show, status: :created, location: @product }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /products/1 or /products/1.json
-  def update
-    respond_to do |format|
-      if @product.update(product_params)
-        format.html { redirect_to @product, notice: "Product was successfully updated." }
-        format.json { render :show, status: :ok, location: @product }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /products/1 or /products/1.json
-  def destroy
-    @product.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to products_path, status: :see_other, notice: "Product was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    @products = Product.where(category: 'electronics')
   end
 
   def purge_image
@@ -66,27 +13,49 @@ class ProductsController < ApplicationController
     redirect_back fallback_location: edit_product_path(@product), notice: "Image deleted."
   end
 
+  def select_quantity
+    @products = @promotion.products
+  end
+
   def buy
-    @charge_info = PurchaseService.new.create(@product, current_user)
-    respond_to do |format|
-      format.html do
-        html = render_to_string(
-          partial: "pix_code",
-          locals: { qr_code: @charge_info[:qr_code], qr_base64: @charge_info[:qr_base64], payment_id: @charge_info[:payment_id] }
-        )
-        render html: html.html_safe
+    @payment = PurchaseService.new.create(@product, current_user)
+    if Rails.env.development?
+      redirect_to promotion_path(@product.promotion)
+    else
+      respond_to do |format|
+        format.html do
+          html = render_to_string(
+            partial: "pix_code",
+            locals: { transaction: @payment.transaction_record, payment_id: @payment.id, purchase: @payment.purchase }
+          )
+          render html: html.html_safe
+        end
       end
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    def save_invite_code
+      if params[:invite_code].present?
+        cookies[:invite_code] = {
+          value: params[:invite_code],
+          expires: 7.days.from_now
+        }
+      end
+    end
+
+    def set_promotion
+      @promotion = Promotion.find(params[:promotion_id])
+    end
+
     def set_product
       @product = Product.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
-    def product_params
-      params.require(:product).permit(:name, :category, :description, :price, :store_id, images: [])
+    def render_to_register
+      unless user_signed_in?
+        store_location_for :user, select_quantity_path(@product.promotion)
+        redirect_to new_user_session_path
+      end
     end
 end

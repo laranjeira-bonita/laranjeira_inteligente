@@ -1,0 +1,32 @@
+<% unit_price = current_access.price %>
+<div class="flex flex-col items-center justify-center" style="min-height: 100vh; background-size: cover; background-position: center; background-image: url('/assets/images/orange.jpg');">
+  <% @products.each do |product| %>
+    
+    <div class="buy-btn" style="
+      width: 92%;
+      text-align: center;
+      background: #fffaf1;
+      margin-top: 20px;
+      height: 55px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #c0392b;
+      border: 2px solid #f1c40f;
+      transition: transform 0.2s;
+    ">
+      <% if product.multi_number > 1 %>
+        <%= button_to "🚀 #{product.multi_number} participações - #{number_to_currency(product.price, unit: 'R$', separator: ',')}", buy_product_path(product), method: :post, remote: true, id: "buy-btn" %>
+      <% else %>
+        <%= button_to "🚀 1 participação - #{number_to_currency(product.price, unit: 'R$', separator: ',')}", buy_product_path(product), method: :post, remote: true, id: "buy-btn" %>
+      <% end %>
+    </div>
+    <% if product.multi_number > 1 %>
+      <p>economize <strong><%= number_to_currency(unit_price * product.multi_number - product.price, unit: 'R$', separator: ',') %></strong></p>
+    <% end %>
+  <% end %>
+</div>

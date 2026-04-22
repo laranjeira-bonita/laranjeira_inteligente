@@ -1,0 +1,148 @@
+<% current_user_response = participation.user_id.eql?(current_user&.id) %>
+<ul class="responses-list">
+  <li style="text-align: left;<% if participation.user_id.eql?(current_user&.id) || winner_or_not %> background-color: #fce295; font-size: 28px;<% end %>">
+  <% if participation.reward_rate.present? %><span style="font-size: 32px;">
+  <%= case index
+  when 0
+    "🥇"
+  when 1
+    "🥈"
+  when 2
+    "🥉"
+  else
+    "🏅️"
+  end %>
+
+  </span><%end%>
+    <strong><%= participation_nickname(participation, current_user_response) %></strong>  
+    <p class="value" ><%= participation.response %></p>
+    <% if participation.reward_rate.present? %><p class="value" style="text-align: right;">PIX <%= number_to_currency(participation.reward_rate, unit: "R$", separator: ",") %></p><%end%>
+  </li>
+  
+</ul>
+<div style="margin-left: 220px;">
+  <%= participation.created_at.to_datetime.strftime("%d/%m/%Y %H:%M") %>
+</div>
+
+
+<style>
+.response-input {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 2px solid #e0a07a;
+  padding: 10px 14px;
+  width: 70px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+  margin-right: 10px;
+}
+.name-input {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 2px solid #e0a07a;
+  padding: 10px 14px;
+  width: 210px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+  margin-right: 8px;
+}
+
+.response-input:focus {
+  border-color: #d05f3c;
+  box-shadow: 0 0 8px rgba(208,95,60,0.4);
+  outline: none;
+}
+
+.response-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3b3734;
+}
+
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.no-spinner {
+  -moz-appearance: textfield;
+}
+
+.btn-save {
+  background-color: #ef8964;
+  color: #3b3734;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+  display: none;
+  width: 70px;
+}
+
+.btn-save:hover {
+  background-color: #a84a02;
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.10);
+}
+
+.btn-save:active {
+  transform: scale(0.97);
+}
+
+.responses-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  text-align: center;
+
+}
+
+.responses-list li {
+  background: rgba(255,255,255,0.3);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 500;
+  min-width: 380px;
+  color: #333;
+  max-width: 350px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.10);
+}
+
+.responses-list .value {
+  font-weight: 700;
+  color: #d44f2f;
+  margin-left: 40px;
+  text-align: left;
+}
+
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("response_<%= participation.id %>");
+  const submit = document.getElementById("submit_<%= participation.id %>");
+  const numberError = document.getElementById("number-error-#{participation.id}");
+
+  function validate() {
+    const value = Number(input.value);
+    const validNumber = value >= 1 && value <= 1000;
+    submit.style.display = validNumber ? "inline-block" : "none";
+    numberError.style.display = (!value || validNumber) ? "none" : "block";
+  }
+
+  input.addEventListener("input", validate);
+  validate();
+});
+</script>
+

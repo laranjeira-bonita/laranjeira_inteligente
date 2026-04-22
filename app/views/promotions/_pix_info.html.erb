@@ -1,0 +1,85 @@
+<p>  🎉 Parabéns! Você ganhou 🎉 </p>
+<p>🔥 Você receberá um pix de <%= number_to_currency(@promotion.participations.where(user_id: current_user.id).map(&:reward_rate).compact.sum || 0, unit: 'R$') %> 🔥</p>
+<%= form_for(current_user, as: :user, url: user_path, method: :put) do |f| %>
+
+    <div class="input-row" style="width: 220px; margin-top: 10px;" id="full_name_row">
+        <%= f.label :full_name, "Nome completo", style: "margin-right: 4px;", class: "shadow-text" %><br />
+        <%= f.text_field :full_name, autocomplete: "name", class: "login-input", id: "login_full_name" %>
+    </div>
+
+    <div class="input-row" style="width: 220px; margin-top: 10px;" id="document_cpf_row">
+        <%= f.label :document_cpf, "CPF", style: "margin-right: 15px;", class: "shadow-text" %><br />
+        <%= f.text_field :document_cpf, autocomplete: "cpf", class: "login-input", id: "login_document_cpf" %>
+    </div>
+
+    <div class="input-row" style="width: 220px; margin-top: 10px;" id="pix_key_row">
+        <%= f.label :pix_key, "Chave Pix", style: "margin-right: 15px;", class: "shadow-text" %><br />
+        <%= f.text_field :pix_key, autocomplete: "pix-key", class: "login-input", id: "login_pix_key" %>
+    </div>
+
+    <p id="pix_info_description" style="font-size: 14px; color: #666; margin-top: 10px; margin-bottom: 10px;">
+        Confira sua chave PIX com atenção antes de enviar. O pagamento será realizado exatamente para a chave informada.
+    </p>
+
+    <%= f.submit "confirmar",
+        class: "btn-submit",
+        id: "confirm_pix_info_submit"
+    %>
+
+    <p id="confirmation_message" style="display: none; font-size: 14px; color: #28a745; margin-top: 10px; margin-bottom: 10px;">
+        ✅️ Informações confirmadas! Vamos processar seu pagamento. Ele deve chegar na sua conta em até 24 horas. Obrigado por participar! 🙏
+    </p>
+<% end %>
+
+<style>
+  .login-btn:hover {
+    color: white;
+  }
+
+  .login-input {
+    width: 145px; 
+    border-radius: 6px; 
+    padding: 5px; 
+    background-color: #f6edde;
+  }
+  .shadow-text {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  .input-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 230px;
+  }
+
+  .btn-submit {
+    background-color: #ef8964;
+    color: #3b3734;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    width: 120px;
+    margin-left: 200px;
+    }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const submitBtn = document.getElementById("confirm_pix_info_submit");
+    const pix_info_description = document.getElementById("pix_info_description");
+    const confirmationMessage = document.getElementById("confirmation_message");
+    function hideBtn() {
+      submitBtn.style.display = "none";
+      pix_info_description.style.display = "none";
+      confirmationMessage.style.display = "block";
+    }
+
+    submitBtn.addEventListener("click", hideBtn);
+  });
+</script>

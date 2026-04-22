@@ -1,3 +1,4 @@
+require 'mercadopago'
 class MercadoPagoService
   def initialize(user, purchase)
     @user = user
@@ -16,19 +17,35 @@ class MercadoPagoService
   private
 
   def create_payment
+    return if Rails.env.development? 
+    return active_transaction if active_transaction.present?
     payment_data = get_payment_data
     payment = sdk.payment.create(payment_data)
-    pix_qr_code = payment.dig(:response, 'point_of_interaction', 'transaction_data', 'qr_code')
-    pix_qr_code_base64 = payment.dig(:response, 'point_of_interaction', 'transaction_data', 'qr_code_base64')
+    qr_code = payment.dig(:response, 'point_of_interaction', 'transaction_data', 'qr_code')
+    qr_base64 = payment.dig(:response, 'point_of_interaction', 'transaction_data', 'qr_code_base64')
     transaction_id = payment.dig(:response, 'id')
-    { qr_code: pix_qr_code, qr_base64: pix_qr_code_base64, transaction_id: transaction_id }
+    create_transaction(qr_code, qr_base64, transaction_id)
   rescue NoMethodError => e
     Rails.logger.error("Error retrieving result: #{e.message}")
     {}
   end
 
+  def create_transaction(qr_code, qr_base64, transaction_id)
+    Transaction.create(
+      transaction_id: transaction_id, 
+      qr_code: qr_code, 
+      qr_base64: qr_base64
+    )
+  end
+
+  def active_transaction
+    transaction_id = @purchase.payments.find_by(status: :opened)&.transaction_id
+    return if transaction_id.nil?
+    Transaction.where('created_at > ?', 30.minutes.ago).find_by(transaction_id: transaction_id)
+  end
+
   def sdk
-    MERCADOPAGO_SDK
+    Mercadopago::SDK.new(ENV['MERCADOPAGO_ACCESS_TOKEN'])    
   end
 
   def get_payment_data

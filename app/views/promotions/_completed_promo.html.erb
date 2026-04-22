@@ -1,0 +1,83 @@
+<% participations_result = @promotion.participations_result %>
+<% current_response_place = @promotion.participations_result.find_index { |p| p.user_id == current_user&.id } %>
+<% winner_or_not = current_response_place.nil? ? false : current_response_place <= (@promotion.multi_rewards.count - 1 || 0) %>
+<div class="bg-center flex flex-col items-center min-h-screen" style="color: black; min-height: 100vh; background-size: 100% 100%; background-position: center; background-color: #ffa500; padding: 20px;">
+    <div id="promotion-panel">
+        <%= render @promotion %>
+        <div id="summary" style="margin-top: 20px; padding: 20px; background-color: #f7e57e; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); width: 100%; max-width: 600px;">
+        <% if winner_or_not %>
+          <%= render 'pix_info' %>
+        <% elsif current_response_place && current_response_place > 0 %>
+          <p>Quase lá, você foi <%= current_response_place + 1 %>º lugar. Participe no próximo!</p>
+        <% else %>
+          <p>Você não participou desta vez. Fique atento para o próximo desafio!</p>
+        <% end %>
+        </div>
+        <div class="buy-btn" style="
+            width: 100%;
+            text-align: center;
+            background: #fffaf1;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            height: 55px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #c0392b;
+            border: 2px solid #f1c40f;
+            transition: transform 0.2s;
+        ">
+            <%= link_to "Participar do Outro Jogo", promotion_path(current_promo), id: "buy-btn" %>
+        </div>
+
+        <% participations_result.each_with_index do |participation, index| %>
+          <div id="<%= current_response_place.eql?(index) ? 'my-result' : index %>">
+            <%= render 'participation_result', participation: participation, index: index, current_response_place: current_response_place, winner_or_not: winner_or_not %>
+          </div>
+        <% end %>
+    </div>
+
+
+    <div class="buy-btn" style="
+        width: 100%;
+        text-align: center;
+        background: #fffaf1;
+        margin-top: 20px;
+        margin-bottom: 2000px;
+        height: 55px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+        color: #c0392b;
+        border: 2px solid #f1c40f;
+        transition: transform 0.2s;
+    ">
+        <%= link_to "Participar do Outro Jogo", promotion_path(current_promo), id: "buy-btn" %>
+    </div>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let triggered = false;
+
+    window.addEventListener("scroll", function () {
+      if (triggered) return;
+
+      triggered = true;
+
+      var myResult = document.getElementById("my-result");
+      if (myResult) {
+        myResult.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  });
+</script>

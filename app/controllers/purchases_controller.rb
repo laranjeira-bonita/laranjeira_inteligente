@@ -1,80 +1,29 @@
 class PurchasesController < ApplicationController
-  before_action :set_purchase, only: %i[ show edit update destroy ]
   before_action :set_payment, only: %i[ confirm_payment ]
 
-  # GET /purchases or /purchases.json
   def index
     @purchases = current_user.purchases.includes(:product)
   end
 
-  # GET /purchases/1 or /purchases/1.json
-  def show
-  end
-
-  # GET /purchases/new
-  def new
-    @purchase = Purchase.new
-  end
-
-  # GET /purchases/1/edit
-  def edit
-  end
-
-  # POST /purchases or /purchases.json
-  def create
-    @purchase = Purchase.new(purchase_params)
-
-    respond_to do |format|
-      if @purchase.save
-        format.html { redirect_to @purchase, notice: "Purchase was successfully created." }
-        format.json { render :show, status: :created, location: @purchase }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @purchase.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /purchases/1 or /purchases/1.json
-  def update
-    respond_to do |format|
-      if @purchase.update(purchase_params)
-        format.html { redirect_to @purchase, notice: "Purchase was successfully updated." }
-        format.json { render :show, status: :ok, location: @purchase }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @purchase.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /purchases/1 or /purchases/1.json
-  def destroy
-    @purchase.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to purchases_path, status: :see_other, notice: "Purchase was successfully destroyed." }
-      format.json { head :no_content }
-    end
-  end
-
   def confirm_payment
-    approved = PurchaseService.new.confirm_payment(@payment)
-    render json: { approved: approved }
+    approved = Rails.env.development? || PurchaseService.new.confirm_payment(@payment)
+    add_invitation_bonus if approved
+    redirect_to @payment.promotion
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_purchase
-      @purchase = Purchase.find(params[:id])
-    end
-
     def set_payment
       @payment = Payment.find(params[:payment_id])
     end
 
-    # Only allow a list of trusted parameters through.
-    def purchase_params
-      params.require(:purchase).permit(:price)
+    def add_invitation_bonus
+      invite_code = cookies[:invite_code]
+      return unless invite_code.present?
+
+      inviter = User.find_by(uuid: invite_code)
+      return unless inviter.present? && inviter != user
+
+      PromotionService.new(promotion).add_ticker(inviter, 1, :invitation)
+      cookies.delete(:invite_code)
     end
 end

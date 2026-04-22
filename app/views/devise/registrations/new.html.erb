@@ -5,19 +5,60 @@
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "login-input", id: "login_email" %>
     </div>
 
-    <div class="input-row" style="width: 220px; margin-top: 10px;">
+    <div class="input-row" style="width: 220px; margin-top: 17px;">
         <%= f.label :password, "Senha", style: "margin-right: 15px;", class: "shadow-text" %><br />
         <%= f.password_field :password, autocomplete: "current-password", class: "login-input", id: "login_password" %>
       <%= f.check_box :remember_me, checked: true, style: "display:none;" %>
     </div>
 
-    <div class="input-row" style="width: 220px; margin-top: 10px;" id="password_confirmation_row">
+    <div class="input-row" style="width: 220px; margin-top: 8px;" id="password_confirmation_row">
         <%= f.label :password_confirmation, "Senha de novo", style: "margin-right: 15px;", class: "shadow-text" %><br />
         <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "login-input", id: "login_password_confirmation" %>
     </div>
 
-    <div class="actions input-row login-btn shadow-text" style="width: 220px; margin-top: 10px; height: 32px">
-      <%= f.submit "Sign up", style: "border-radius: 6px; padding: 5px; width: 220px; margin-top: 10px; margin-left: 27px; display: none; font-size: 20px;", id: "login_submit" %>
+    <div class="input-row shadow-text" id="password_mismatch_alert" style="width: 220px; margin-top: 10px; font-size: 14px; color: red; display: none;">
+      <p>As duas senha estão diferentes.</p>
+    </div>
+
+    <div class="input-row" style="width: 220px; margin-top: 8px;">
+      <%= f.label :nickname, "Apelido", style: "margin-right: 18px;", class: "shadow-text" %><br />
+      <%= f.text_field :nickname, autofocus: true, autocomplete: "nickname", class: "login-input", id: "login_nickname" %>
+    </div>
+
+    <div class="input-row shadow-text" style="width: 220px; margin-top: 10px; font-size: 12px;">
+      <p>Para pagamentos futuros, precisamos do seu CPF e nome completo.</p>
+    </div>
+    
+    <div class="input-row" style="width: 220px; margin-top: 10px;" id="full_name_row">
+      <%= f.label :full_name, "Nome completo", style: "margin-right: 4px;", class: "shadow-text" %><br />
+      <%= f.text_field :full_name, autocomplete: "name", class: "login-input", id: "login_full_name" %>
+    </div>
+
+    <div class="input-row" style="width: 220px; margin-top: 10px;" id="document_cpf_row">
+      <%= f.label :document_cpf, "CPF", style: "margin-right: 15px;", class: "shadow-text" %><br />
+      <%= f.text_field :document_cpf, autocomplete: "cpf", class: "login-input", id: "login_document_cpf" %>
+    </div>
+    <div class="input-row">
+      <div class="buy-btn" style="
+        width: 180px;
+        text-align: center;
+        background: #fffaf1;
+        margin-top: 20px;
+        margin-left: 25px;
+        height: 45px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+        color: #c0392b;
+        border: 2px solid #f1c40f;
+        transition: transform 0.2s;
+      " id="login_submit">
+        <%= f.submit "🚀 Registrar", remote: true %>
+      </div>
     </div>
   <% end %>
 </div>
@@ -28,17 +69,23 @@
     const email = document.getElementById("login_email");
     const password = document.getElementById("login_password");
     const submitBtn = document.getElementById("login_submit");
+    const passwordConfirmation = document.getElementById("login_password_confirmation");
+    const passwordMismatchAlert = document.getElementById("password_mismatch_alert");
+
+    submitBtn.style.display = 'none';
+    passwordMismatchAlert.style.display = 'none';
 
     function checkFields() {
-      if (email.value.trim() !== "" && password.value.trim() !== "") {
-        submitBtn.style.display = "block";
-      } else {
-        submitBtn.style.display = "none";
-      }
-    }
+      let passwordConfirmationOk = passwordConfirmation.value.trim() === password.value.trim()
+      let showSubmitBtn = email.value.trim() !== "" && password.value.trim() !== "" && passwordConfirmationOk
+      submitBtn.style.display = showSubmitBtn ? "flex" : "none";
 
+      let showPasswordAlert = password.value.trim() !== "" && passwordConfirmation.value.trim() !== "" && !passwordConfirmationOk
+        passwordMismatchAlert.style.display = showPasswordAlert ? "block" : "none";
+      }
     email.addEventListener("input", checkFields);
     password.addEventListener("input", checkFields);
+    passwordConfirmation.addEventListener("input", checkFields);
   });
 </script>
 
@@ -63,6 +110,6 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 200px;
+    width: 230px;
   }
 </style>

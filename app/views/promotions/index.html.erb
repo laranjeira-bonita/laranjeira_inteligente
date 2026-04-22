@@ -1,14 +1,36 @@
-<p style="color: green"><%= notice %></p>
+<div class="bg-center flex flex-col items-center min-h-screen" style="color: black; min-height: 100vh; background-size: 100% 100%; background-position: center; background-color: #ffa500; padding: 20px;">
+  
+  <div class="buy-btn" style="
+      width: 320px;
+      text-align: center;
+      background: #fffaf1;
+      margin-top: 20px;
+      height: 55px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #c0392b;
+      border: 2px solid #f1c40f;
+      transition: transform 0.2s;
+  ">
+      <%= link_to "Aproveita o Jogo de Hoje", promotion_path(current_promo), id: "buy-btn" %>
+  </div>
 
-<h1>Promotions</h1>
+  <div id="promotions" style="margin-top: 40px; width: 100%; max-width: 600px;">
+    <% @promotions.completed.each do |promotion| %>
+      <%= link_to promotion do %>
+        <p style="font-weight: bold; font-size: 18px;">
+          <%= promotion.title %>
+        </p>
+        <p style="font-size: 14px; color: #d35400;">
+          Terminado em <%= promotion.updated_at.to_datetime.strftime("%d %b %Y %H:%M") %>
+        </p>
+      <% end %>
+    <% end %>
+  </div>
 
-<div id="promotions">
-  <% @promotions.each do |promotion| %>
-    <%= render promotion %>
-    <p>
-      <%= link_to "Show this promotion", promotion %>
-    </p>
-  <% end %>
 </div>
-
-<%= link_to "New promotion", new_promotion_path %>

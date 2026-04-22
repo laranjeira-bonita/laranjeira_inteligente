@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_31_022613) do
+ActiveRecord::Schema[7.1].define(version: 2026_04_21_194833) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -51,7 +54,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_31_022613) do
 
   create_table "descriptions", force: :cascade do |t|
     t.string "describable_type", null: false
-    t.integer "describable_id", null: false
+    t.bigint "describable_id", null: false
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -59,19 +62,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_31_022613) do
   end
 
   create_table "participations", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "promotion_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "promotion_id", null: false
     t.decimal "used_seconds", precision: 10, scale: 3
-    t.decimal "score_points"
     t.integer "response"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "nickname"
+    t.integer "reward_off_type"
+    t.integer "reward_rate"
+    t.integer "reward_position"
     t.index ["promotion_id"], name: "index_participations_on_promotion_id"
     t.index ["user_id"], name: "index_participations_on_user_id"
   end
 
   create_table "payments", force: :cascade do |t|
-    t.integer "purchase_id", null: false
+    t.bigint "purchase_id", null: false
     t.decimal "amount", precision: 10, scale: 2, null: false
     t.string "payment_method", null: false
     t.string "status", default: "opened", null: false
@@ -87,64 +93,63 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_31_022613) do
     t.integer "category"
     t.string "description"
     t.decimal "price"
-    t.integer "store_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "promotion_id"
+    t.bigint "promotion_id"
+    t.integer "multi_number", default: 1
     t.index ["promotion_id"], name: "index_products_on_promotion_id"
-    t.index ["store_id"], name: "index_products_on_store_id"
   end
 
   create_table "promotions", force: :cascade do |t|
     t.integer "rate"
     t.integer "off_type"
     t.string "title"
-    t.integer "store_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "activity_id", null: false
+    t.bigint "activity_id", null: false
     t.integer "status", default: 0, null: false
     t.string "result_description"
     t.integer "people_limit"
     t.integer "target_number"
-    t.integer "winner_id"
+    t.datetime "completed_at"
+    t.json "multi_winner", default: []
+    t.json "multi_rewards", default: []
     t.index ["activity_id"], name: "index_promotions_on_activity_id"
-    t.index ["store_id"], name: "index_promotions_on_store_id"
-    t.index ["winner_id"], name: "index_promotions_on_winner_id"
   end
 
   create_table "purchases", force: :cascade do |t|
     t.decimal "price"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "product_id", null: false
+    t.bigint "product_id", null: false
     t.integer "state", default: 0, null: false
+    t.bigint "ticker_id"
     t.index ["product_id"], name: "index_purchases_on_product_id"
+    t.index ["ticker_id"], name: "index_purchases_on_ticker_id"
     t.index ["user_id"], name: "index_purchases_on_user_id"
-  end
-
-  create_table "stores", force: :cascade do |t|
-    t.string "name"
-    t.string "document_cnpj"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
-    t.index ["user_id"], name: "index_stores_on_user_id"
   end
 
   create_table "tickers", force: :cascade do |t|
     t.integer "rate"
     t.integer "off_type"
     t.string "title"
-    t.integer "store_id"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "promotion_id", null: false
+    t.bigint "promotion_id", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_tickers_on_deleted_at"
     t.index ["promotion_id"], name: "index_tickers_on_promotion_id"
-    t.index ["store_id"], name: "index_tickers_on_store_id"
     t.index ["user_id"], name: "index_tickers_on_user_id"
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.string "transaction_id"
+    t.string "qr_code"
+    t.string "qr_base64"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -159,9 +164,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_31_022613) do
     t.datetime "remember_created_at"
     t.string "last_sign_in_ip"
     t.datetime "blocked_at"
+    t.string "uuid"
+    t.string "pix_key"
     t.index ["document_cpf"], name: "index_users_on_document_cpf", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -169,8 +177,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_31_022613) do
   add_foreign_key "participations", "promotions"
   add_foreign_key "participations", "users"
   add_foreign_key "payments", "purchases"
-  add_foreign_key "products", "stores"
-  add_foreign_key "promotions", "users", column: "winner_id"
   add_foreign_key "purchases", "products"
   add_foreign_key "purchases", "users"
   add_foreign_key "tickers", "users"

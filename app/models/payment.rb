@@ -27,14 +27,12 @@ class Payment < ApplicationRecord
   end
 
   def promotion
-    product.promotion
+    product.promotion || Promotion.active_one
   end
 
   def after_payment
-    if valid_gift_card?
-        add_ticker(:gift_card)
-        add_bonus_activity
-    end
+    add_ticker(:gift_card) if valid_gift_card?
+    add_bonus_activity
     update(paid_at: Time.current)
   end
 
@@ -43,10 +41,17 @@ class Payment < ApplicationRecord
   end
 
   def add_bonus_activity
-    promotion&.participations&.create(user: user)
+    product.multi_number.times do |i|
+      promotion&.participations&.create(user: user)
+    end
   end
 
   def valid_gift_card?
     product.gift_card?
+  end
+
+
+  def transaction_record
+    Transaction.find_by(transaction_id: transaction_id)
   end
 end

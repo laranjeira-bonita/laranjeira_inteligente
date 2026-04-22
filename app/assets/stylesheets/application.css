@@ -18,6 +18,13 @@ body {
   font-family: SF Pro Display,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
 }
 
+  .login-input {
+    width: 145px; 
+    border-radius: 6px; 
+    padding: 5px; 
+    background-color: #f36106;
+  }
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

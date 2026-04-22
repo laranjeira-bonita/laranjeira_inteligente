@@ -1,22 +1,66 @@
-<div class="bg-red-500 bg-center h-60 flex flex-col justify-center items-center min-h-screen" style="min-height: 100vh; background-size: cover; background-position: center; background-image: url('/assets/images/orange.jpg');">
-<%= link_to "Logout", destroy_user_session_path, method: :delete %>  
-<h1>Welcome <%= current_user.full_name if current_user %></h1>
+<div class="flex flex-col items-center justify-center" style="min-height: 100vh; background-size: cover; background-position: center; background-image: url('/assets/images/orange.jpg');">
+  <-- <div style="position: absolute; top: 20px; right: 20px;"><%= link_to "Logout", destroy_user_session_path, method: :delete %></div> -->
+  <% if current_user&.full_name.present? %>
+    <h1 style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); font-size: 24px;">Boas Vindas! <%= current_user.full_name %></h1>
+  <% end %>
   <div id="products">
     <% @products.each do |product| %>
-      <%= render product %>
-      <p>
-        <%= link_to "Show this product", product %>
-      </p>
+      <%= link_to product do %>
+        <%= render 'product_card', product: product %>
+      <% end %>
     <% end %>
   </div>
-
-  <div id="participations">
-    <% ( @participations || [] ).each do |participation| %>
-      <%= render participation %>
-      <p>
-        <%= link_to "game details", participation %>
-      </p>
-    <% end %>
-  </div>
+  <p id="link_to_promotion" style="margin-top: 20px; font-size: 16px; font-weight: bold;">
+    <%= link_to "Aproveita o Jogo para Ganhar PIX", promotion_path(Promotion.active_one) %>
+  </p>
+  <% if Promotion.completed.any? %>
+    <p id="link_to_old_promotion">
+      <%= link_to "Histórico dos Jogos", promotions_path %>
+    </p>
+  <% end %>
 </div>
+<style>
+  #product_price {
+    display: none;
+  }
 
+  #link_to_promotion {
+    width: 300px;
+    text-align: center;
+    background: #fff4e4;
+    margin-top: 60px;
+    height: 48px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #d35400;
+    transition: transform 0.2s;
+  }
+  #link_to_promotion :hover {
+    transform: scale(1.05);
+  }
+
+  #link_to_old_promotion :hover {
+    transform: scale(1.05);
+  }
+
+  #link_to_old_promotion {
+    width: 160px;
+    text-align: center;
+    background: #fae2c0;
+    margin-top: 20px;
+    height: 34px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+</style>

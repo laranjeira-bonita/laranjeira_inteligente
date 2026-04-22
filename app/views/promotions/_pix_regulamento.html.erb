@@ -1,0 +1,45 @@
+<p style="font-size: 16px; font-weight: bold;">🎮 Bem-vindo ao Game da Média! </p>
+<p style="font-size: 13px;">Um desafio 100% matemático, simples e estratégico.</p>
+
+<h3 style="font-size: 16px; margin-top: 20px;">🧠 Como funciona?</h3>
+<p style="font-size: 13px;">Você escolhe um número inteiro entre 1 e 1000.</p>
+
+<p style="font-size: 13px;">Quando chegarem <%= @promotion.people_limit %> participantes, será calculada a média aritmética de todos os números enviados.</p>
+<p style="font-size: 13px;">🏆 Vencem os <%= @promotion.multi_rewards.count %> participantes que escolherem os números mais próximos da média final.</p>
+<p style="font-size: 13px; font-weight: bold;">Em caso de empate, vence quem enviou primeiro.</p>
+
+<h3 style="font-size: 16px; margin-top: 20px;">🎁 Premiação</h3>
+<% @promotion.multi_rewards.each_with_index do |reward, i| %>
+  <p style="font-size: 13px;"><span style="font-size: 16px;"><%= case i when 0 then "🥇" when 1 then "🥈" when 2 then "🥉" else "🎖" end %></span> <%= i + 1 %>º lugar: R$<%= reward %><strong> via PIX</strong></p>
+<% end %>
+
+<p style="font-size: 13px; font-weight: bold;">Não é sorteio, não é rifa. É um desafio de habilidade matemática, baseado apenas em lógica e estratégia.</p>
+
+<h3 style="font-size: 16px; margin-top: 20px;">💳 Como participar:</h3>
+
+<ul style="font-size: 13px;">
+  <li>✔ Realize o pagamento de <%= current_access_price %></li>
+  <li>✔ Envie seu número</li>
+  <li>✔ Aguarde o resultado final</li>
+</ul>
+
+<h3 style="font-size: 16px; margin-top: 20px;">🔥 Convide amigos e ganhe mais participações</h3>
+<p style="font-size: 13px;">✔ A cada 3 amigos que participarem pelo seu link, você ganha 1 participação grátis</p>
+
+<h3 style="font-size: 16px; margin-top: 20px;">🛡️ Transparência e Segurança</h3>
+
+<p style="font-size: 13px;">✔ Todos os envios registram data e hora</p>
+<p style="font-size: 13px;">✔ A média e o resultado final serão divulgados publicamente</p>
+<p style="font-size: 13px;">✔ Não é possível alterar o número após o envio</p>
+<p style="font-size: 13px;">✔ Não há reembolso após a participação</p>
+
+
+<h3 style="font-size: 16px; margin-top: 20px;">💸 Pagamento dos prêmios (PIX)</h3>
+<p style="font-size: 13px;">✔ Após a divulgação do resultado, os vencedores poderão inserir sua chave PIX</p>
+<p style="font-size: 13px;">✔ O pagamento será realizado em até 24 horas após o envio da chave</p>
+
+
+<h3 style="font-size: 16px; margin-top: 20px;">📜 Regulamento</h3>
+<p style="font-size: 13px;">✔ Este é um jogo de habilidade matemática, sem sorteio</p>
+<p style="font-size: 13px;">✔ O resultado é definido exclusivamente por cálculo da média.</p>
+

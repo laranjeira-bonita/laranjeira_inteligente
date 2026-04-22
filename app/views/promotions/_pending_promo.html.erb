@@ -1,0 +1,215 @@
+<% responded = my_participations(@promotion).responded.exists? %>
+<% invites = current_user&.tickers&.where(off_type: :invite) %>
+<div class="bg-center flex flex-col items-center min-h-screen" style="color: black; min-height: 100vh; background-size: 100% 100%; background-position: center; background-color: #ffa500; padding: 20px;">
+  <div id="promotion-panel">
+    <%= render @promotion %>
+
+    <% if my_participations(@promotion).present? %>
+      <% my_participations(@promotion).each do |participation| %>
+        <%= render 'participation', participation: participation %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div id="regulamento-panel" style="display: none;">
+    <%= render "#{@promotion.off_type}_regulamento" %>
+  </div>
+
+  <div id="term-panel" style="display: none;">
+    <%= render "#{@promotion.off_type}_term" %>
+  </div>  
+  
+  <div id="privacy-panel" style="display: none;">
+    <%= render 'privacy' %>
+  </div>
+
+  <% if my_participations(@promotion).empty? %>
+    <div class="buy-btn" style="
+        width: 320px;
+        text-align: center;
+        background: #fffaf1;
+        margin-top: 20px;
+        height: 55px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+        color: #c0392b;
+        border: 2px solid #f1c40f;
+        transition: transform 0.2s;
+    ">
+      <%= button_to "🚀  Participar do Jogo Agora", select_quantity_path(@promotion), method: :get, remote: true, id: "buy-btn" %>
+    </div>
+  <% else %>
+  <% if current_user %>
+    <% share_message = "🔥 Desafio valendo PIX\n\nPaguei #{current_access_price} pra entrar kkk\nVocê escolhe um número e quem chegar mais perto da média ganha\nJá tem bastante gente entrando 👀👉link:\n #{invite_link}" %>
+  <% end %>
+  <div class="buy-btn" style="
+        width: 100%;
+        text-align: center;
+        background: #fffaf1;
+        margin-top: 20px;
+        height: 55px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.20);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 14px;
+        color: #c0392b;
+        border: 2px solid #f1c40f;
+        transition: transform 0.2s;
+    ">
+      <a
+        href="https://wa.me/?text=<%= CGI.escape(share_message) %>"
+        target="_blank"
+        rel="noopener"
+        style="text-decoration: none; color: inherit;"
+      >
+        Convide 3 amigos e ganhe 1 participação
+      </a>
+    </div>
+    <p style="text-align: justify; width: 100%; font-size: 12px; margin-top: 10px;">🔥 Quando 3 amigos entrarem pelo seu link e realizarem o pagamento, você recebe 1 participação grátis, pode convidar quantos amigos quiser!
+    <% if invites.exists? %>
+      <span style="text-align: justify; width: 100%;"> Você já convidou <%= invites.count %> amigos! 🔥</span>
+    <% end %>
+    </p>
+  <% end %>
+    <div class="flex flex-row">
+    <div id="regulamento-btn" style="
+        width: 90px;
+        text-align: center;
+        background: #fff4e4;
+        margin-top: 20px;
+        margin-bottom: 2000px;
+        height: 36px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 10px;
+        color: #d35400;
+        transition: transform 0.2s;
+    ">
+        <button>Regulamento</button>
+    </div>
+
+    <div id="term-btn" style="
+        width: 90px;
+        text-align: center;
+        background: #fff4e4;
+        margin-top: 20px;
+        height: 36px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 10px;
+        color: #d35400;
+        transition: transform 0.2s;
+        margin-left: 10px;
+    ">
+        <button>Termo de Uso</button>
+    </div>
+
+    <div id="privacy-btn" style="
+        width: 90px;
+        text-align: center;
+        background: #fff4e4;
+        margin-top: 20px;
+        height: 36px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 10px;
+        color: #d35400;
+        transition: transform 0.2s;
+        margin-left: 10px;
+    ">
+        <button>Privacidade</button>
+    </div>
+
+    <div id="promo-btn" style="
+        width: 60px;
+        text-align: center;
+        background: #d35400;
+        margin-top: 20px;
+        height: 36px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 12px;
+        color: white;
+        transition: transform 0.2s;
+        display: none;
+        margin-left: 10px;
+    ">
+        <button>Voltar</button>
+    </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  const regulamentoBtn = document.getElementById("regulamento-btn");
+  const termBtn = document.getElementById("term-btn");
+  const privacyBtn = document.getElementById("privacy-btn");
+  const promoBtn = document.getElementById("promo-btn");
+
+  const regulamentoPanel = document.getElementById("regulamento-panel");
+  const promotionPanel = document.getElementById("promotion-panel");
+  const termPanel = document.getElementById("term-panel");
+  const privacyPanel = document.getElementById("privacy-panel");
+
+
+  regulamentoBtn.addEventListener("click", function() {
+    regulamentoPanel.style.display = "block";
+    promotionPanel.style.display = "none";
+    privacyPanel.style.display = "none";
+    termPanel.style.display = "none";
+    promoBtn.style.display = "flex";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  termBtn.addEventListener("click", function() {
+    regulamentoPanel.style.display = "none";
+    promotionPanel.style.display = "none";
+    privacyPanel.style.display = "none";
+    termPanel.style.display = "block";
+    promoBtn.style.display = "flex";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  privacyBtn.addEventListener("click", function() {
+    privacyPanel.style.display = "block";
+    regulamentoPanel.style.display = "none";
+    termPanel.style.display = "none";
+    promotionPanel.style.display = "none";
+    promoBtn.style.display = "flex";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  promoBtn.addEventListener("click", function() {
+    promotionPanel.style.display = "block";
+    regulamentoPanel.style.display = "none";
+    termPanel.style.display = "none";
+    privacyPanel.style.display = "none";
+    promoBtn.style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+</script>

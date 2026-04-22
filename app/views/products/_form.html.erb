@@ -42,11 +42,6 @@
   </div>
 
   <div>
-    <%= form.label :store_id, "Store", style: "display: block" %>
-    <%= form.collection_select :store_id, Store.all, :id, :name, prompt: "Select a store" %>
-  </div>
-
-  <div>
     <%= form.label :description, style: "display: block" %>
     <%= form.text_field :description %>
   </div>

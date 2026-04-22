@@ -1,31 +1,24 @@
 class ParticipationsController < ApplicationController
-  before_action :set_participation, only: %i[ show update ]
+  before_action :set_participation, only: %i[ update ]
 
   def index
     @participations = current_user.participations.includes(:activity)
   end
 
-  def show
-  end
-
-
   def update
-    respond_to do |format|
-      if @participation.update(participation_params)
-        format.html { redirect_to @participation, notice: "Participation was responded updated." }
-        format.json { render :show, status: :ok, location: @participation }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @participation.errors, status: :unprocessable_entity }
-      end
+    if @participation.update(participation_params)
+      redirect_to promotion_path(@participation.promotion)
     end
   end
 
   private
     def set_participation
-      @participation = Participation.find(params[:id])
+      @participation = current_user.participations.find_by(id: params[:id])
+      if @participation.nil?
+        redirect_to products_path
+      end
     end
     def participation_params
-      params.require(:participation).permit(:response)
+      params.require(:participation).permit(:response, :nickname)
     end 
 end

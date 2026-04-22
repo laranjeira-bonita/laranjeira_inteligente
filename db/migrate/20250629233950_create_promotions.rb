@@ -4,7 +4,6 @@ class CreatePromotions < ActiveRecord::Migration[7.1]
       t.integer :rate
       t.integer :off_type
       t.string :title
-      t.references :store
       t.timestamps
     end
   end
