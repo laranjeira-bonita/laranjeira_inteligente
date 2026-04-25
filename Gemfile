@@ -73,5 +73,5 @@ gem 'image_processing', '~> 1.2'
 gem 'aasm'
 gem 'mercadopago-sdk'
 gem 'dotenv-rails'
-gem "tailwindcss-rails"
+gem "tailwindcss-rails", "~> 2.7"
 gem 'paranoia', '~> 2.4'
