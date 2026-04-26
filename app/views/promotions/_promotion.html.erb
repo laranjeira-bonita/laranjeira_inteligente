@@ -1,6 +1,6 @@
 <% responded = my_participations(@promotion).responded.exists? %>
 <% @promotion ||= promotion %>
-<div id="<%= dom_id @promotion %>">
+<div style="padding-top: 26px;" id="<%= dom_id @promotion %>">
   <% if @promotion.completed? %>
     <strong style="font-size: 26px;"><%= @promotion.participations.count %> pessoas participaram</strong>
     <p><strong style="font-size: 26px;">Média: <span class="value"><%= @promotion.target_number %></span></strong></p>
@@ -34,7 +34,7 @@
       <p style="font-weight: bold; font-size: 16px; color: #962317; margin-bottom: 10px;">Participe e ganhe até 95% OFF em um iPhone</p>
       <p style="margin-bottom: 10px;">Pague <strong><%= current_access_price %></strong> e participe do jogo: escolha um número entre 1 e 1000. </p>
       <p style="margin-bottom: 10px;">Quando atingirmos <strong><%= @promotion.people_limit %></strong> participantes, calculamos a média — quem escolheu o número mais próximo da média ganha o direito de comprar o iPhone com <%=biggest_reward(@promotion) %>% de subsídio (vencedor paga só <%= 100 - biggest_reward(@promotion) %>%). Em caso de empate, vence quem enviou primeiro. <strong>O apelido do vencedor será divulgado na página após o término do game.</strong></p>
-      <strong><%= [@promotion.participations.count, 1].max %> pessoas já participaram. </strong>Corre para garantir sua vaga!</span>
+      <p><%= [@promotion.participations.count, 1].max %> pessoas já participaram. Corre para garantir sua vaga!</p>
     <% end %>
   <% end %>
 </div>

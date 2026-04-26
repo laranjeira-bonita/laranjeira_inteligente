@@ -1,4 +1,4 @@
-<div style="position: absolute; top: 20px; right: 20px;"><%= link_to "Login", new_user_session_path %></div>
+<% if !user_signed_in? %><div style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); position: absolute; top: 20px; right: 20px; background-color: #fff4e4; padding: 10px; border-radius: 5px; height: 24px; width: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px;"><%= link_to "Login", new_user_session_path %></div><% end %>
 <% if @promotion.completed? %>
   <%= render 'completed_promo', promotion: @promotion %>
 <% else %>
