@@ -1,3 +1,4 @@
+<div style="position: absolute; top: 20px; right: 20px;"><%= link_to "Login", new_user_session_path %></div>
 <% if @promotion.completed? %>
   <%= render 'completed_promo', promotion: @promotion %>
 <% else %>

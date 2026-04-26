@@ -1,6 +1,6 @@
 <% responded = my_participations(@promotion).responded.exists? %>
 <% invites = current_user&.tickers&.where(off_type: :invite) %>
-<div class="bg-center flex flex-col items-center min-h-screen" style="color: black; min-height: 100vh; background-size: 100% 100%; background-position: center; background-color: #ffa500; padding: 20px;">
+<div class="bg-center flex flex-col items-center min-h-screen" style="color: black; min-height: 100vh; min-width: 100vw; background-size: 100% 100%; background-position: center; background-color: #ffa500; padding: 20px;">
   <div id="promotion-panel">
     <%= render @promotion %>
 

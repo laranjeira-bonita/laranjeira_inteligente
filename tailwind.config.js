@@ -8,9 +8,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'orange-pattern': "url('/assets/images/orange.jpg')",
-      },
     },
   },
   plugins: [],

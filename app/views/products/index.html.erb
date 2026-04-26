@@ -1,5 +1,5 @@
-<div class="flex flex-col items-center justify-center" style="min-height: 100vh; background-size: cover; background-position: center; background-image: url('/assets/images/orange.jpg');">
-  <-- <div style="position: absolute; top: 20px; right: 20px;"><%= link_to "Logout", destroy_user_session_path, method: :delete %></div> -->
+<div class="flex flex-col items-center justify-center" style="min-height: 100vh; min-width: 100vw; background-size: cover; background-position: center; background-color: #ffa500; padding: 20px;">
+  <div style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); position: absolute; top: 20px; right: 20px;"><%= link_to "Login", new_user_session_path %></div>
   <% if current_user&.full_name.present? %>
     <h1 style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); font-size: 24px;">Boas Vindas! <%= current_user.full_name %></h1>
   <% end %>

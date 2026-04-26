@@ -20,7 +20,7 @@ class PurchaseService
   private
 
   def charge_by_qr
-    transaction = charge_via_mercadopago(@purchase)
+    transaction = MercadoPagoService.new(@purchase.user, @purchase).charge
     create_payment(@purchase, transaction)
     return @payment
   end
@@ -42,10 +42,6 @@ class PurchaseService
     @payment = purchase.payments.find_or_initialize_by(amount: purchase.price, payment_method: 'pix', status: 'opened')
     @payment.transaction_id = transaction.transaction_id
     @payment.save!
-  end
-
-  def charge_via_mercadopago(purchase)
-    MercadoPagoService.new(purchase.user, purchase).charge
   end
 
   def price_with_ticker_discount(product, current_user)
