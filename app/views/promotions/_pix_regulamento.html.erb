@@ -5,8 +5,19 @@
 <p style="font-size: 13px;">Você escolhe um número inteiro entre 1 e 1000.</p>
 
 <p style="font-size: 13px;">Quando chegarem <%= @promotion.people_limit %> participantes, será calculada a média aritmética de todos os números enviados.</p>
+<p class="formula" style="align-items: start; display: flex; justify-content: start; margin-top: 20px;">
+  \[
+  \text{Média Aritmética} =
+  \frac{x_1 + x_2 + \ldots + x_{<%= @promotion.people_limit %>}}{<%= @promotion.people_limit %>}
+  \]
+</p>
+
+<ul>
+  <li style="font-size: 13px;">\(x_1\), \(x_2\), ..., \(x_{<%= @promotion.people_limit %>}\) são os números escolhidos pelos <%= @promotion.people_limit %> participantes</li>
+  <li style="font-size: 13px;">O resultado da fórmula é a média final do jogo</li>
+</ul>
 <p style="font-size: 13px;">🏆 Vencem os <%= @promotion.multi_rewards.count %> participantes que escolherem os números mais próximos da média final.</p>
-<p style="font-size: 13px; font-weight: bold;">Em caso de empate, vence quem enviou primeiro.</p>
+<p style="font-size: 13px; font-weight: bold;">Em caso de empate, terá vantagem quem realizou o envio primeiro. Todos os envios registram a data e hora da confirmação do pagamento. Após o encerramento do jogo, todos os números enviados serão publicados no site para conferência.</p>
 
 <h3 style="font-size: 16px; margin-top: 20px;">🎁 Premiação</h3>
 <% @promotion.multi_rewards.each_with_index do |reward, i| %>
@@ -42,4 +53,3 @@
 <h3 style="font-size: 16px; margin-top: 20px;">📜 Regulamento</h3>
 <p style="font-size: 13px;">✔ Este é um jogo de habilidade matemática, sem sorteio</p>
 <p style="font-size: 13px;">✔ O resultado é definido exclusivamente por cálculo da média.</p>
-

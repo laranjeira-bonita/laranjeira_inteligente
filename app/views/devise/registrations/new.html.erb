@@ -38,6 +38,10 @@
       <%= f.label :document_cpf, "CPF", style: "margin-right: 15px;", class: "shadow-text" %><br />
       <%= f.text_field :document_cpf, autocomplete: "cpf", class: "login-input", id: "login_document_cpf" %>
     </div>
+    <div class="input-row" style="width: 220px; margin-top: 16px;" id="phone_number_row">
+      <%= f.label :phone_number, "Telefone", style: "margin-right: 10px;", class: "shadow-text" %><br />
+      <%= f.text_field :phone_number, autocomplete: "tel", class: "login-input", id: "login_phone_number" %>
+    </div>
     <div class="input-row">
       <div class="buy-btn" style="
         width: 180px;

@@ -3,38 +3,62 @@
 <div style="padding-top: 26px;" id="<%= dom_id @promotion %>">
   <% if @promotion.completed? %>
     <strong style="font-size: 26px;"><%= @promotion.participations.count %> pessoas participaram</strong>
-    <p><strong style="font-size: 26px;">Média: <span class="value"><%= @promotion.target_number %></span></strong></p>
+    <p><strong style="font-size: 26px;">Média Final: <span class="value"><%= @promotion.target_number %></span></strong></p>
     <p style="font-size: 12px;">O participante escolhe um número entre 1 e 1000, quem escolheu o número mais próximo da média vence. Em caso de empate, vence quem enviou primeiro.</p>
+
+    <p class="formula" style="align-items: start; display: flex; justify-content: start; margin-top: 20px;">
+      \[
+      \text{Média Aritmética} =
+      \frac{x_1 + x_2 + \ldots + x_{<%= @promotion.participations.count %>}}{<%= @promotion.participations.count %>}
+      \]
+    </p>
+
+    <ul>
+      <li style="font-size: 13px;">Então o resultado da fórmula é a média final do jogo: </li>
+      <li class="formula" style="margin-top: 10px; align-items: start; display: flex; justify-content: start;">
+        \[
+        \frac{
+          <%= @promotion.participations_result.first(6).pluck(:response).join(' + ') %>
+        \ldots}{
+          <%= @promotion.participations.count %>
+        } = <%= @promotion.target_number %>
+        \]
+      </li>
+    </ul>
 
   <% else %>
     <p style="font-weight: bold; font-size: 24px; color: #962317;">Game da Média </p>
     <% if @promotion.pix? %>
-      <p style="font-size: 13px;">Escolha um número entre 1 e 1000.</p>
-      <p style="font-size: 13px;">Chegue o mais perto da média e ganhe prêmios em dinheiro.</p>
-      <p style="font-weight: bold; font-size: 16px; color: #962317; margin-top: 16px;">🏆 Premiação</p>
+      <p style="font-weight: bold; font-size: 16px; color: #962317; margin-top: 12px;">🏆 Premiação</p>
       <% @promotion.multi_rewards.each_with_index do |reward, i| %>
         <p style="font-size: 13px;"><span style="font-size: 16px;"><%= case i when 0 then "🥇" when 1 then "🥈" when 2 then "🥉" else "🎖" end %></span> <%= i + 1 %>º lugar: R$<%= reward %><strong> via PIX</strong></p>
       <% end %>
 
       <p style="font-weight: bold; font-size: 16px; color: #962317;">⚡ Como funciona</p>
+      <p style="font-size: 12px;"><%= @promotion.people_limit %> participantes entram no jogo e cada um escolhe um número. Ao final, a média é calculada automaticamente, e os <%= @promotion.multi_rewards.count %> participantes que escolherem os números mais próximos da média são os vencedores.</p>
+
+      <p class="formula" style="align-items: start; display: flex; justify-content: start; font-size: 13px;">
+        \[
+        \text{Média Aritmética} =
+        \frac{x_1 + x_2 + \ldots + x_{<%= @promotion.people_limit %>}}{<%= @promotion.people_limit %>}
+        \]
+      </p>
+
       <ul>
-        <li style="font-size: 13px;">✔ 300 participantes entram no jogo</li>
-        <li style="font-size: 13px;">✔ Todos escolhem um número</li>
-        <li style="font-size: 13px;">✔ A média é calculada automaticamente</li>
-        <li style="font-size: 13px;">✔ Os mais próximos vencem</li>
+        <li style="font-size: 12px;">\(x_1\), \(x_2\), ..., \(x_{<%= @promotion.people_limit %>}\) são os números entre 1 e 1000 escolhidos pelos <%= @promotion.people_limit %> participantes, o resultado da fórmula é a média final do jogo. <strong>Após o encerramento do jogo, todos os números enviados serão publicados no site para conferência.</strong></li>
       </ul>
+
       <p style="font-weight: bold; font-size: 16px; color: #962317;">💳 Participação: <%= current_access_price %></p>
       <ul>
         <li style="font-size: 13px;">✔ 1 número por participação</li>
         <li style="font-size: 13px;">✔ Possibilidade de ganhar múltiplas entradas convidando amigos</li>
       </ul>
-
-      <p style="font-weight: bold; font-size: 16px; color: #962317; margin-top: 16px;"><strong><%= [@promotion.participations.count, 1].max %> pessoas já participaram. </strong>Corre para garantir sua vaga!</p>
+      <p style="font-weight: bold; font-size: 13px; color: #962317;">✔ <strong><%= [@promotion.participations.count, 1].max %> pessoas já participaram. </strong>Corre para garantir sua vaga!</p>
     <% else %>
       <p style="font-weight: bold; font-size: 16px; color: #962317; margin-bottom: 10px;">Participe e ganhe até 95% OFF em um iPhone</p>
       <p style="margin-bottom: 10px;">Pague <strong><%= current_access_price %></strong> e participe do jogo: escolha um número entre 1 e 1000. </p>
       <p style="margin-bottom: 10px;">Quando atingirmos <strong><%= @promotion.people_limit %></strong> participantes, calculamos a média — quem escolheu o número mais próximo da média ganha o direito de comprar o iPhone com <%=biggest_reward(@promotion) %>% de subsídio (vencedor paga só <%= 100 - biggest_reward(@promotion) %>%). Em caso de empate, vence quem enviou primeiro. <strong>O apelido do vencedor será divulgado na página após o término do game.</strong></p>
-      <p><%= [@promotion.participations.count, 1].max %> pessoas já participaram. Corre para garantir sua vaga!</p>
+      <p style="font-size: 13px;"><%= [@promotion.participations.count, 1].max %> pessoas já participaram. Corre para garantir sua vaga!</p>
     <% end %>
   <% end %>
 </div>
@@ -45,3 +69,5 @@
   color: #d44f2f;
 }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

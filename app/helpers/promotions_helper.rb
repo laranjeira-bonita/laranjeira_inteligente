@@ -25,7 +25,6 @@ module PromotionsHelper
     end
 
     def participation_nickname(participation, current_user_response)
-        participation.nickname.presence || "Anônimo"
         participation.nickname || (current_user_response ? 'Você' : 'Anônimo')
     end
 end

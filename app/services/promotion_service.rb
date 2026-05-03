@@ -19,7 +19,36 @@ class PromotionService
     nil
   end
 
+  def self_clone
+    new_promo
+  end
+
   private
+
+  def new_promo
+    Promotion.create(
+      off_type: @promotion.off_type,
+      rate: @promotion.rate,
+      title: "#{Promotion.count + 1}º Jogo",
+      activity_id: @promotion.activity_id,
+      status: :pending,
+      people_limit: @promotion.people_limit,
+      multi_rewards: @promotion.multi_rewards
+    ).tap do |promo|
+      new_products(promo)
+    end
+  end
+
+  def new_products(new_promotion)
+    new_promotion.products = @promotion.products.map do |product|
+      Product.create(
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        multi_number: product.multi_number
+      )
+    end
+  end
 
   def mean_calculation
     responses = @promotion.participations.pluck(:response).compact
