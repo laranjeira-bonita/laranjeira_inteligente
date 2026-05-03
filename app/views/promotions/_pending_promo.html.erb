@@ -44,7 +44,15 @@
       <%= button_to "🚀  Participar do Jogo Agora", select_quantity_path(@promotion), method: :get, remote: true, id: "buy-btn" %>
     </div>
   <% else %>
-  <% share_message = "🔥 Desafio valendo PIX\n\nPaguei #{current_access_price} pra entrar kkk\nVocê escolhe um número e quem chegar mais perto da média ganha\nJá tem bastante gente entrando 👀👉link:\n #{invite_link}" %>
+    <% share_message = "👀 Tô participando de um jogo de matemática bem interessante
+
+    Tu escolhe um número entre 1 e 1000 e depois calculam a média de todo mundo 🤯
+
+    Quem chegar mais perto da média ganha 🏆
+
+    🔥 Já tem bastante gente entrando, entrei também:
+    #{invite_link}" %>
+
   <div class="buy-btn" style="
         width: 100%;
         text-align: center;
