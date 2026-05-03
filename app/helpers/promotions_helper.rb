@@ -1,7 +1,7 @@
 module PromotionsHelper
 
     def current_access
-        @promotion.products.find_by(category: [:ticket, :gift_card])
+        @promotion.products.find_by(category: [:ticket, :gift_card], multi_number: 1)
     end
 
     def current_promo
